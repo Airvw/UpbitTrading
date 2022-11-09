@@ -38,7 +38,7 @@ public class HttpSetting {
                 .addHeader(HEADER_TYPES[1], CONTENT_TYPE_VALUES[0])
                 .build();
         Response response = client.newCall(request).execute();
-        return response.body().toString();
+        return response.body().string();
     }
 
     public static String getTicker() throws IOException{
