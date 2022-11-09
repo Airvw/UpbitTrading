@@ -14,10 +14,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AccountsTest {
 
     private final String[] keyArray = new String[]{"currency", "balance", "locked", "avg_buy_price", "avg_buy_price_modified", "unit_currency"};
+    private int coinCnt;
 
     @BeforeEach
     @DisplayName("key 파일 읽기 테스트")
     void setUp(){
+        coinCnt = 13;
     }
 
     @Test
@@ -35,6 +37,7 @@ public class AccountsTest {
         HttpEntity entity = HttpSetting.getAccounts();
         String resultStr = EntityUtils.toString(entity);
         JSONArray jsonArray = new JSONArray(resultStr);
+        assertThat(jsonArray.length()).isEqualTo(coinCnt);
         IntStream.range(0, jsonArray.length())
                 .mapToObj(jsonArray::getJSONObject)
                 .forEach(oj -> assertThat(oj.length()).isEqualTo(keyArray.length));
