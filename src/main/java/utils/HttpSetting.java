@@ -19,7 +19,7 @@ public class HttpSetting {
     private static final String[] CONTENT_TYPE_VALUES = new String[]{"application/json", "multipart/formed-data"};
     private static final String MARKET_ALL_URL = "/market/all";
     private static final String ACCOUNT_URL = "/accounts";
-    private static final String TICKER_URL = "/ticker";
+    private static final String TICKER_URL = "/ticker?markets=";
 
     public static HttpEntity getAccounts() throws IOException {
         HttpClient client = HttpClientBuilder.create().build();
@@ -30,7 +30,7 @@ public class HttpSetting {
         return response.getEntity();
     }
 
-    public static String getCoinList() throws IOException{
+    public static String getKRWCoinList() throws IOException{
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(SERVER_URL + MARKET_ALL_URL + "?isDetails=true")
@@ -41,10 +41,10 @@ public class HttpSetting {
         return response.body().string();
     }
 
-    public static String getTicker() throws IOException{
+    public static String getKRWTicker(String queryString) throws IOException{
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(SERVER_URL + TICKER_URL + "?markets=KRW-BTC,KRW-ETH")
+                .url(SERVER_URL + TICKER_URL + queryString)
                 .get()
                 .addHeader(HEADER_TYPES[1], CONTENT_TYPE_VALUES[0])
                 .build();
