@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import utils.HttpSetting;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,7 +18,7 @@ public class CoinAllTest {
     private int coinCnt;
     @BeforeEach
     void setUp() throws IOException {
-        String resultStr = HttpSetting.getKRWCoinList();
+        String resultStr = HttpSetting.getKRWCoins();
         JSONArray jsonArray = new JSONArray(resultStr);
         coinCnt = (int) IntStream.range(0, jsonArray.length()).mapToObj(jsonArray::getJSONObject)
                 .filter(oj -> oj.getString("market_warning").equals("NONE"))
@@ -44,7 +46,7 @@ public class CoinAllTest {
     @Test
     @DisplayName("코인 리스트 파싱 테스트")
     void getCoinListParseTest() throws IOException {
-        String resultStr = HttpSetting.getKRWCoinList();
+        String resultStr = HttpSetting.getKRWCoins();
         JSONArray jsonArray = new JSONArray(resultStr);
         IntStream.range(0, jsonArray.length()).mapToObj(jsonArray::getJSONObject)
                 .filter(oj -> oj.getString("market_warning").equals("NONE"))
@@ -55,13 +57,13 @@ public class CoinAllTest {
     @Test
     @DisplayName("마켓 코인을 문자열로 파싱 테스트")
     void getCoinStringTest() throws IOException {
-        StringBuilder sb = new StringBuilder();
-        String resultStr = HttpSetting.getKRWCoinList();
+        List<String> coinKRWList = new ArrayList<>();
+        String resultStr = HttpSetting.getKRWCoins();
         JSONArray jsonArray = new JSONArray(resultStr);
         IntStream.range(0, jsonArray.length()).mapToObj(jsonArray::getJSONObject)
                 .filter(oj -> oj.getString("market_warning").equals("NONE"))
                 .filter(oj -> oj.getString("market").startsWith("KRW"))
-                .forEach(oj -> sb.append(oj.getString("market")).append(","));
-        assertThat(sb.toString().split(",").length).isEqualTo(coinCnt);
+                .forEach(oj -> coinKRWList.add(oj.getString("market")));
+        assertThat(coinKRWList.size()).isEqualTo(coinCnt);
     }
 }
