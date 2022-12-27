@@ -21,6 +21,11 @@ public class HttpSetting {
     private static final String ACCOUNT_URL = "/accounts";
     private static final String TICKER_URL = "/ticker?markets=";
 
+    private static final String CANDLE_URL = "/candles";
+
+    private static final String DAY_PARAM = "/days?count=200&market=";
+
+
     public static HttpEntity getAccounts() throws IOException {
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(SERVER_URL + ACCOUNT_URL);
@@ -30,7 +35,7 @@ public class HttpSetting {
         return response.getEntity();
     }
 
-    public static String getKRWCoinList() throws IOException{
+    public static String getKRWCoins() throws IOException{
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(SERVER_URL + MARKET_ALL_URL + "?isDetails=true")
@@ -41,13 +46,40 @@ public class HttpSetting {
         return response.body().string();
     }
 
-    public static String getKRWTicker(String queryString) throws IOException{
+    public static String getKRWTickers(String queryString) throws IOException{
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(SERVER_URL + TICKER_URL + queryString)
                 .get()
                 .addHeader(HEADER_TYPES[1], CONTENT_TYPE_VALUES[0])
                 .build();
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
+
+    public static String getDayTradePrices(String coin) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(SERVER_URL + CANDLE_URL + DAY_PARAM + coin)
+                .get()
+                .addHeader(HEADER_TYPES[1], CONTENT_TYPE_VALUES[0])
+                .build();
+
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
+    public static String getDayTradePrices(String coin, String to) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(SERVER_URL + CANDLE_URL + DAY_PARAM + coin + "&to=" + to)
+                .get()
+                .addHeader(HEADER_TYPES[1], CONTENT_TYPE_VALUES[0])
+                .build();
+
         Response response = client.newCall(request).execute();
         return response.body().string();
     }
